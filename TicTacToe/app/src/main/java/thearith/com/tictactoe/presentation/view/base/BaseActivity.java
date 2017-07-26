@@ -1,10 +1,18 @@
 package thearith.com.tictactoe.presentation.view.base;
 
+import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 
 import butterknife.ButterKnife;
+import io.reactivex.disposables.CompositeDisposable;
+import thearith.com.tictactoe.presentation.internal.di.components.ActivityComponent;
 import thearith.com.tictactoe.presentation.internal.di.components.ApplicationComponent;
+import thearith.com.tictactoe.presentation.internal.di.components.DaggerActivityComponent;
+import thearith.com.tictactoe.presentation.internal.di.modules.ActivityModule;
 import thearith.com.tictactoe.presentation.presenter.Presenter;
 
 /**
@@ -15,6 +23,16 @@ import thearith.com.tictactoe.presentation.presenter.Presenter;
 
 public abstract class BaseActivity extends AppCompatActivity {
 
+    private ActivityComponent mActivityComponent;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+//        this.getApplicationComponent().inject(this);
+
+        initializeInjector();
+    }
+
     @Override
     public void setContentView(@LayoutRes int layoutResID) {
         super.setContentView(layoutResID);
@@ -23,10 +41,22 @@ public abstract class BaseActivity extends AppCompatActivity {
 
 
     /**
+     * Adds a {@link Fragment} to this activity's layout.
+     *
+     * @param containerViewId The container view to where add the fragment.
+     * @param fragment The fragment to be added.
+     */
+    protected void addFragment(@IdRes int containerViewId, Fragment fragment) {
+        final FragmentTransaction fragmentTransaction = this.getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.add(containerViewId, fragment);
+        fragmentTransaction.commit();
+    }
+
+
+    /**
      * Methods related to Presenter
      * */
 
-    protected abstract void setUpPresenter();
     protected abstract Presenter getPresenter();
 
 
@@ -62,10 +92,22 @@ public abstract class BaseActivity extends AppCompatActivity {
 
 
     /**
-     * Gets Application Component
+     * Dagger 2 Injections
      * */
+    private void initializeInjector() {
+//        mActivityComponent = DaggerActivityComponent.builder()
+//                .applicationComponent(getApplicationComponent())
+//                .activityModule(new ActivityModule(this))
+//                .build();
+        mActivityComponent = null;
+    }
+
     public ApplicationComponent getApplicationComponent() {
         return ((BaseApplication) getApplication()).getApplicationComponent();
+    }
+
+    public ActivityComponent getActivityComponent() {
+        return mActivityComponent;
     }
 
 }

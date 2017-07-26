@@ -5,6 +5,8 @@ import android.app.Application;
 import com.squareup.leakcanary.BuildConfig;
 import com.squareup.leakcanary.LeakCanary;
 
+import thearith.com.tictactoe.data.internal.di.modules.DataModule;
+import thearith.com.tictactoe.domain.internal.di.modules.DomainModule;
 import thearith.com.tictactoe.presentation.internal.di.components.ApplicationComponent;
 import thearith.com.tictactoe.presentation.internal.di.components.DaggerApplicationComponent;
 import thearith.com.tictactoe.presentation.internal.di.modules.ApplicationModule;
