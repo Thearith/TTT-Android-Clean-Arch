@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+
+    <!--General color-->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="transparent">#00FFFFFF</color>
+    <color name="green_sea">#FF16a085</color>
+    <color name="green_sea_focused">#ff27ae60</color>
+
+    <!--App Theme color-->
+    <color name="colorPrimary">@color/green_sea</color>
+    <color name="colorPrimaryDark">@color/green_sea_focused</color>
+    <color name="colorAccent">@color/white</color>
+
+    <color name="tictactoe_default_bg">#EEEEEE</color>
+    <color name="tictactoe_x_bg">#FF6347</color>
+    <color name="tictactoe_o_bg">#AEC6CF</color>
+    <color name="tictactoe_text_shadow">#F5FCFF</color>
+
 </resources>

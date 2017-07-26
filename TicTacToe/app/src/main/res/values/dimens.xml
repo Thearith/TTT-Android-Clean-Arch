@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="player_turn_text">40sp</dimen>
+
+    <!--Tic Tac Toe-->
+    <dimen name="tictactoe_grid">40sp</dimen>
+    <dimen name="grid_default_size">100dp</dimen>
+    <dimen name="grid_elevation">4dp</dimen>
+    <dimen name="grid_corner_radius">4dp</dimen>
+    <dimen name="grid_margin">3dp</dimen>
+
+    <dimen name="margin_10dp">10dp</dimen>
+    <dimen name="margin_20dp">20dp</dimen>
+
+</resources>
