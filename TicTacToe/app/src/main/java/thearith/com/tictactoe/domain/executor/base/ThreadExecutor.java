@@ -1,4 +1,4 @@
-package thearith.com.tictactoe.domain.interactor.executor.base;
+package thearith.com.tictactoe.domain.executor.base;
 
 import java.util.concurrent.Executor;
 

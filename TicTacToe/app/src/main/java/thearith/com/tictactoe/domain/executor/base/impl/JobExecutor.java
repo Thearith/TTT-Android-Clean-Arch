@@ -1,4 +1,4 @@
-package thearith.com.tictactoe.domain.interactor.executor.base.impl;
+package thearith.com.tictactoe.domain.executor.base.impl;
 
 import android.support.annotation.NonNull;
 
@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-import thearith.com.tictactoe.domain.interactor.executor.base.ThreadExecutor;
+import thearith.com.tictactoe.domain.executor.base.ThreadExecutor;
 import thearith.com.tictactoe.presentation.internal.di.ApplicationScope;
 
 /**

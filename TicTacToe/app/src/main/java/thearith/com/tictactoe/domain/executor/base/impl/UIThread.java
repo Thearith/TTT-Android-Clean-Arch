@@ -1,10 +1,10 @@
-package thearith.com.tictactoe.domain.interactor.executor.base.impl;
+package thearith.com.tictactoe.domain.executor.base.impl;
 
 import javax.inject.Inject;
 
 import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import thearith.com.tictactoe.domain.interactor.executor.base.PostExecutionThread;
+import thearith.com.tictactoe.domain.executor.base.PostExecutionThread;
 import thearith.com.tictactoe.presentation.internal.di.ApplicationScope;
 
 /**
