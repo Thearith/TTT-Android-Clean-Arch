@@ -1,12 +1,12 @@
-package thearith.com.tictactoe.domain.interactor.executor;
+package thearith.com.tictactoe.domain.interactor.base;
 
 import dagger.internal.Preconditions;
 import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import thearith.com.tictactoe.domain.interactor.executor.base.PostExecutionThread;
-import thearith.com.tictactoe.domain.interactor.executor.base.ThreadExecutor;
+import thearith.com.tictactoe.domain.executor.base.PostExecutionThread;
+import thearith.com.tictactoe.domain.executor.base.ThreadExecutor;
 import thearith.com.tictactoe.presentation.presenter.Observer;
 
 /**
@@ -31,8 +31,12 @@ public abstract class UseCase<T> implements Interactor<T> {
      * To be implemented by individual use case
      *
      * */
-    protected abstract Observable<T> createObservable();
-    protected abstract Observable<T> createObservable(Object params);
+    protected abstract Observable<T> createObservable(Object... params);
+
+
+    private Observable<T> createObservable() {
+        return createObservable(null);
+    }
 
 
     @Override
@@ -41,7 +45,7 @@ public abstract class UseCase<T> implements Interactor<T> {
     }
 
     @Override
-    public Observable<T> execute(Object params) {
+    public Observable<T> execute(Object... params) {
         return createObservable(params);
     }
 
@@ -57,7 +61,7 @@ public abstract class UseCase<T> implements Interactor<T> {
     }
 
     @Override
-    public void execute(Observer<T> subscriber, Object params) {
+    public void execute(Observer<T> subscriber, Object... params) {
         final Disposable disposable = createObservable(params)
                 .subscribeOn(Schedulers.from(mThreadExecutor))
                 .observeOn(mPostExecutionThread.getScheduler())
