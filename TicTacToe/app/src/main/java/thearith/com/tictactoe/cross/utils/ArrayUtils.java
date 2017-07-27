@@ -1,9 +1,8 @@
 package thearith.com.tictactoe.cross.utils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-
-import thearith.com.tictactoe.cross.model.PlayerType;
 
 /**
  * Created by Thearith on 7/27/17.
@@ -11,53 +10,59 @@ import thearith.com.tictactoe.cross.model.PlayerType;
 
 public class ArrayUtils {
 
-    public static <T extends Object> T[] flatten(T[][] array) {
-        if(array != null) {
-            List<T> list = new ArrayList<T>(array.length * array.length);
-            for(T[] row : array) {
-                for(T elem : row) {
-                    list.add(elem);
-                }
+    public static <T> List<T> flatten(List<List<T>> list) {
+        if(list != null) {
+            List<T> flatList = new ArrayList<>(list.size() * list.size());
+            for(List<T> small : list) {
+                Collections.copy(flatList, small);
             }
 
-            return (T[]) list.toArray();
+            return flatList;
         }
 
         return null;
     }
 
 
-    public static PlayerType[] initArray(PlayerType defaultValue, int size) {
-        PlayerType[] array = new PlayerType[size*size];
-        for(int i=0; i<size*size; i++) {
-            array[i] = defaultValue;
+    public static <T> List<T> initArray(T defaultValue, int size) {
+        List<T> list = new ArrayList<>();
+        for(int i=0; i<size; i++) {
+            list.add(defaultValue);
         }
 
-        return array;
+        return list;
     }
 
-    public static PlayerType[][] init2DArray(PlayerType defaultValue, int size) {
-        PlayerType[][] scores = new PlayerType[size][size];
-        for(int i=0; i<size; i++) {
-            for(int j=0; j<size; j++) {
-                scores[i][j] = defaultValue;
-            }
-        }
-
-        return scores;
+    public static <T> List<T> copyArray(List<T> list) {
+        List<T> copy = new ArrayList<>();
+        Collections.copy(copy, list);
+        return copy;
     }
 
-
-    public static PlayerType[][] copy2DArray(PlayerType[][] array) {
-        int size = array.length;
-        PlayerType[][] scores = new PlayerType[size][size];
+    public static <T> List<List<T>> init2DArray(T defaultValue, int size) {
+        List<List<T>> list = new ArrayList<>();
         for(int i=0; i<size; i++) {
-            for(int j=0; j<size; j++) {
-                scores[i][j] = array[i][j];
-            }
+            List<T> innerList = initArray(defaultValue, size);
+            list.add(innerList);
         }
 
-        return scores;
+        return list;
+    }
+
+    public static <T> List<List<T>> copy2DArray(List<List<T>> list) {
+        if(list != null) {
+            List<List<T>> copy = new ArrayList<>();
+            for(List<T> innerList : list) {
+                List<T> copyInnerList = new ArrayList<>();
+                Collections.copy(copyInnerList, innerList);
+                copy.add(copyInnerList);
+            }
+
+            return copy;
+
+        }
+
+        return null;
     }
 
 }

@@ -1,54 +1,43 @@
 package thearith.com.tictactoe.cross.model;
 
+import java.util.List;
+
 import thearith.com.tictactoe.cross.utils.ArrayUtils;
 
 /**
  * Created by Thearith on 7/25/17.
  */
 
-public class GameState {
+public class GameState implements Cloneable {
 
-    private PlayerType[][] mScores;
-    private PlayerType mWinner;
+    private final List<List<PlayerType>> mScores;
+    private final List<Player> mPlayers;
+    private final PlayerType mWinner;
 
 
     /**
      * Constructor
      * */
 
-    public GameState(int size) {
-        mWinner = PlayerType.UNKNOWN;
-        mScores = ArrayUtils.init2DArray(PlayerType.UNKNOWN, size);
-    }
-
-    public GameState(GameState gameState) {
-        int size = gameState.mScores.length;
-        mScores = ArrayUtils.copy2DArray(gameState.getScores());
-        mWinner = PlayerType.UNKNOWN;
-    }
-
-
-
-
-    /**
-     * Mutate methods
-     * */
-
-    public void setScores(PlayerType playerType, int row, int col) {
-        mScores[row][col] = playerType;
-    }
-
-    public void setWinner(PlayerType winner) {
+    public GameState(List<List<PlayerType>> scores, List<Player> players, PlayerType winner) {
+        mScores = scores;
+        mPlayers = players;
         mWinner = winner;
     }
 
+    @Override
+    public GameState clone() {
+        List<List<PlayerType>> scores = ArrayUtils.copy2DArray(mScores);
+        List<Player> players = ArrayUtils.copyArray(mPlayers);
+        return new GameState(scores, players, mWinner);
+    }
 
 
     /**
      * Getters
      * */
 
-    public PlayerType[][] getScores() {
+    public List<List<PlayerType>> getScores() {
         return mScores;
     }
 
@@ -60,7 +49,7 @@ public class GameState {
         return mWinner.isUnknown();
     }
 
-    public int getGameSize() {
-        return mScores.length;
+    public List<Player> getPlayers() {
+        return mPlayers;
     }
 }
