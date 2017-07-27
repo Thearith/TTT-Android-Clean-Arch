@@ -36,32 +36,32 @@ public class LocalGameManager implements GameManager {
 
     private GameState markGrid(final GameState state, final PlayerType player, final int row, final int col) {
         GameState newState = new GameState(state);
-        newState.setState(player, row, col);
+        newState.setScores(player, row, col);
         return newState;
     }
 
     private GameState checkWinner(final GameState state) {
         GameState newState = new GameState(state);
-        PlayerType[][] grid = newState.getState();
-        PlayerType winner = checkGrid(grid);
+        PlayerType[][] scores = newState.getScores();
+        PlayerType winner = checkGrid(scores);
         newState.setWinner(winner);
 
         return newState;
     }
 
-    private PlayerType checkGrid(PlayerType[][] grid) {
-        if(grid != null) {
-            PlayerType winnerRow = checkRows(grid);
+    private PlayerType checkGrid(PlayerType[][] scores) {
+        if(scores != null) {
+            PlayerType winnerRow = checkRows(scores);
             if(!winnerRow.isUnknown()) {
                 return winnerRow;
             }
 
-            PlayerType winnerColumn = checkColumns(grid);
+            PlayerType winnerColumn = checkColumns(scores);
             if(!winnerColumn.isUnknown()) {
                 return winnerColumn;
             }
 
-            PlayerType winnerDiagonal = checkDiagonals(grid);
+            PlayerType winnerDiagonal = checkDiagonals(scores);
             if(!winnerDiagonal.isUnknown()) {
                 return winnerDiagonal;
             }
@@ -70,53 +70,53 @@ public class LocalGameManager implements GameManager {
         return PlayerType.UNKNOWN;
     }
 
-    private PlayerType checkRows(@NonNull PlayerType[][] grid) {
-        int size = grid.length;
+    private PlayerType checkRows(@NonNull PlayerType[][] scores) {
+        int size = scores.length;
 
         for(int i=0; i<size; i++) {
             boolean isSameType = true;
             for(int j=0; j<size-1; j++) {
-                if(!grid[i][j].equal(grid[i][j+1])) {
+                if(!scores[i][j].equal(scores[i][j+1])) {
                     isSameType = false;
                     break;
                 }
             }
 
             if(isSameType) {
-                return grid[i][0];
+                return scores[i][0];
             }
         }
 
         return PlayerType.UNKNOWN;
     }
 
-    private PlayerType checkColumns(@NonNull PlayerType[][] grid) {
-        int size = grid.length;
+    private PlayerType checkColumns(@NonNull PlayerType[][] scores) {
+        int size = scores.length;
 
         for(int i=0; i<size; i++) {
             boolean isSameType = true;
             for(int j=0; j<size-1; j++) {
-                if(!grid[j][i].equal(grid[j+1][i])) {
+                if(!scores[j][i].equal(scores[j+1][i])) {
                     isSameType = false;
                     break;
                 }
             }
 
             if(isSameType) {
-                return grid[0][i];
+                return scores[0][i];
             }
         }
 
         return PlayerType.UNKNOWN;
     }
 
-    private PlayerType checkDiagonals(@NonNull PlayerType[][] grid) {
-        PlayerType winnerLeft = checkLeftDiagonal(grid);
+    private PlayerType checkDiagonals(@NonNull PlayerType[][] scores) {
+        PlayerType winnerLeft = checkLeftDiagonal(scores);
         if(!winnerLeft.isUnknown()) {
             return winnerLeft;
         }
 
-        PlayerType winnerRight = checkRightDiagonal(grid);
+        PlayerType winnerRight = checkRightDiagonal(scores);
         if(!winnerRight.isUnknown()){
             return winnerRight;
         }
@@ -124,32 +124,32 @@ public class LocalGameManager implements GameManager {
         return PlayerType.UNKNOWN;
     }
 
-    private PlayerType checkLeftDiagonal(@NonNull PlayerType[][] grid) {
-        int size = grid.length;
+    private PlayerType checkLeftDiagonal(@NonNull PlayerType[][] scores) {
+        int size = scores.length;
         boolean isSameType = true;
 
         for(int i=0; i<size-1; i++) {
-            if(!grid[i][i].equal(grid[i+1][i+1])) {
+            if(!scores[i][i].equal(scores[i+1][i+1])) {
                 isSameType = false;
                 break;
             }
         }
 
-        return isSameType ? grid[0][0] : PlayerType.UNKNOWN;
+        return isSameType ? scores[0][0] : PlayerType.UNKNOWN;
     }
 
-    private PlayerType checkRightDiagonal(PlayerType[][] grid) {
-        int size = grid.length;
+    private PlayerType checkRightDiagonal(PlayerType[][] scores) {
+        int size = scores.length;
         boolean isSameType = true;
 
         for(int i=0; i<size-1; i++) {
-            if(!grid[i][size-1-i].equal(grid[i+1][size-2-i])) {
+            if(!scores[i][size-1-i].equal(scores[i+1][size-2-i])) {
                 isSameType = false;
                 break;
             }
         }
 
-        return isSameType ? grid[0][size-1] : PlayerType.UNKNOWN;
+        return isSameType ? scores[0][size-1] : PlayerType.UNKNOWN;
     }
 
 }

@@ -11,6 +11,7 @@ import thearith.com.tictactoe.cross.eventbus.EventBus;
 import thearith.com.tictactoe.cross.model.GamePosition;
 import thearith.com.tictactoe.cross.model.GameState;
 import thearith.com.tictactoe.cross.model.PlayerType;
+import thearith.com.tictactoe.cross.utils.ArrayUtils;
 import thearith.com.tictactoe.domain.interactor.DrawTicTacToeGridUseCase;
 import thearith.com.tictactoe.presentation.internal.di.ActivityScope;
 import thearith.com.tictactoe.presentation.internal.di.ApplicationScope;
@@ -56,15 +57,9 @@ public class TicTacToePresenter implements Presenter {
         mPlayerTurn = PlayerType.PLAYER_X;
 
         mView.drawPlayerTurn(mPlayerTurn, mPlayerTurn.toString());
-        PlayerType[][] grid = mCurrentState.getState();
-        PlayerType[] flatGrid = new PlayerType[grid.length * grid.length];
-        int pos = 0;
-        for(int i=0; i<grid.length; i++) {
-            for(int j=0; j<grid.length; j++) {
-                flatGrid[pos++] = grid[i][j];
-            }
-        }
-        mView.drawGrid(flatGrid);
+        PlayerType[][] score = mCurrentState.getScores();
+        PlayerType[] flatScore = ArrayUtils.flatten(score);
+        mView.drawGrid(flatScore);
     }
 
     private void setGameState(GameState state) {
@@ -107,19 +102,14 @@ public class TicTacToePresenter implements Presenter {
 
         @Override
         public void onNext(GameState value) {
+
             if(value != null) {
                 mCurrentState = value;
 
-                PlayerType[][] grid = value.getState();
-                PlayerType[] flatGrid = new PlayerType[grid.length * grid.length];
-                int pos = 0;
-                for(int i=0; i<grid.length; i++) {
-                    for(int j=0; j<grid.length; j++) {
-                        flatGrid[pos++] = grid[i][j];
-                    }
-                }
+                PlayerType[][] score = value.getScores();
+                PlayerType[] flatScore = ArrayUtils.flatten(score);
 
-                mView.drawGrid(flatGrid);
+                mView.drawGrid(flatScore);
 
                 PlayerType winner = value.getWinner();
                 if(!winner.isUnknown()) {

@@ -1,42 +1,55 @@
 package thearith.com.tictactoe.cross.model;
 
+import thearith.com.tictactoe.cross.utils.ArrayUtils;
+
 /**
  * Created by Thearith on 7/25/17.
  */
 
 public class GameState {
 
-    private PlayerType[][] mGrid;
+    private PlayerType[][] mScores;
     private PlayerType mWinner;
+
+
+    /**
+     * Constructor
+     * */
 
     public GameState(int size) {
         mWinner = PlayerType.UNKNOWN;
-        mGrid = new PlayerType[size][size];
-        for(int i=0; i<size; i++) {
-            for(int j=0; j<size; j++) {
-                mGrid[i][j] = PlayerType.UNKNOWN;
-            }
-        }
+        mScores = ArrayUtils.init2DArray(PlayerType.UNKNOWN, size);
     }
 
     public GameState(GameState gameState) {
-        int size = gameState.mGrid.length;
-        mGrid = new PlayerType[size][size];
-        for(int i=0; i<size; i++) {
-            for(int j=0; j<size; j++) {
-                mGrid[i][j] = gameState.mGrid[i][j];
-            }
-        }
-
+        int size = gameState.mScores.length;
+        mScores = ArrayUtils.copy2DArray(gameState.getScores());
         mWinner = PlayerType.UNKNOWN;
     }
 
-    public PlayerType[][] getState() {
-        return mGrid;
+
+
+
+    /**
+     * Mutate methods
+     * */
+
+    public void setScores(PlayerType playerType, int row, int col) {
+        mScores[row][col] = playerType;
     }
 
-    public void setState(PlayerType playerType, int row, int col) {
-        mGrid[row][col] = playerType;
+    public void setWinner(PlayerType winner) {
+        mWinner = winner;
+    }
+
+
+
+    /**
+     * Getters
+     * */
+
+    public PlayerType[][] getScores() {
+        return mScores;
     }
 
     public PlayerType getWinner() {
@@ -47,11 +60,7 @@ public class GameState {
         return mWinner.isUnknown();
     }
 
-    public void setWinner(PlayerType winner) {
-        mWinner = winner;
-    }
-
     public int getGameSize() {
-        return mGrid.length;
+        return mScores.length;
     }
 }

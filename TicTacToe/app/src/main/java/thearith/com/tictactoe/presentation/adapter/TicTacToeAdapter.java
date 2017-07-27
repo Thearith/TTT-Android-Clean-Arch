@@ -13,6 +13,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import thearith.com.tictactoe.R;
 import thearith.com.tictactoe.cross.model.PlayerType;
+import thearith.com.tictactoe.cross.utils.ArrayUtils;
 import thearith.com.tictactoe.presentation.utils.constants.TicTacToeUtils;
 
 /**
@@ -27,19 +28,16 @@ public class TicTacToeAdapter extends RecyclerView.Adapter<TicTacToeAdapter.TicT
     }
 
     private final int mColSize;
-    private PlayerType[] mGrid;
+    private PlayerType[] mScores;
     private TicTacToeListener mGridListener;
 
     public TicTacToeAdapter(int size) {
         mColSize = size;
-        mGrid = new PlayerType[size*size];
-        for(int i=0; i<size*size; i++) {
-            mGrid[i] = PlayerType.UNKNOWN;
-        }
+        mScores = ArrayUtils.initArray(PlayerType.UNKNOWN, size);
     }
 
     public TicTacToeAdapter(PlayerType[] grid, int size) {
-        mGrid = grid;
+        mScores = grid;
         mColSize = size;
     }
 
@@ -48,11 +46,11 @@ public class TicTacToeAdapter extends RecyclerView.Adapter<TicTacToeAdapter.TicT
         return this;
     }
 
-    public void setGrid(PlayerType[] grid) {
-        if(grid != null) {
-            for(int pos=0; pos<grid.length; pos++) {
-                if(!mGrid[pos].equals(grid[pos])) {
-                    mGrid[pos] = grid[pos];
+    public void setGrid(PlayerType[] scores) {
+        if(scores != null) {
+            for(int pos=0; pos<scores.length; pos++) {
+                if(!mScores[pos].equals(scores[pos])) {
+                    mScores[pos] = scores[pos];
                     notifyItemChanged(pos);
                 }
             }
@@ -61,7 +59,7 @@ public class TicTacToeAdapter extends RecyclerView.Adapter<TicTacToeAdapter.TicT
 
     public void setTicTacToeCol(int row, int col, PlayerType val) {
         int position = row*mColSize + col;
-        mGrid[position] = val;
+        mScores[position] = val;
         notifyItemChanged(position);
     }
 
@@ -77,11 +75,11 @@ public class TicTacToeAdapter extends RecyclerView.Adapter<TicTacToeAdapter.TicT
 
     @Override
     public void onBindViewHolder(TicTacToeViewHolder holder, final int position) {
-        if(position >= mGrid.length) {
+        if(position >= mScores.length) {
             return;
         }
 
-        PlayerType value = mGrid[position];
+        PlayerType value = mScores[position];
 
         Context context = holder.itemView.getContext();
         int bgColor = TicTacToeUtils.getTicTacToeBgColor(value);
@@ -114,7 +112,7 @@ public class TicTacToeAdapter extends RecyclerView.Adapter<TicTacToeAdapter.TicT
 
     @Override
     public int getItemCount() {
-        return mGrid != null ? mGrid.length : 0;
+        return mScores != null ? mScores.length : 0;
     }
 
     class TicTacToeViewHolder extends RecyclerView.ViewHolder {
