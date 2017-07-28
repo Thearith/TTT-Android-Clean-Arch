@@ -96,7 +96,7 @@ public class TicTacToePresenter implements Presenter {
         mInitUseCase.execute(new TicTacToeObserver(), players, size);
     }
 
-    public void drawGrid(int row, int col) {
+    public void checkGrid(int row, int col) {
         PlayerType playerType = mCurrentState.getPlayerTurn().getPlayerType();
         GamePosition gamePosition = new GamePosition(playerType, row, col);
         mDrawUseCase.execute(new TicTacToeObserver(), mCurrentState, gamePosition);
@@ -119,9 +119,8 @@ public class TicTacToePresenter implements Presenter {
                 Player playerTurn = value.getPlayerTurn();
                 mView.drawPlayerTurn(playerTurn.getPlayerType(), playerTurn.getName());
 
-                PlayerType winner = value.getWinner();
-                if(!winner.isUnknown()) {
-                    mView.displayGameOverDialog();
+                if(mCurrentState.hasWinner()) {
+                    mView.displayGameOverDialog(mCurrentState.getWinner().toString());
                 }
             }
         }

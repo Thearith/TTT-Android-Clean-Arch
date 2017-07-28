@@ -46,7 +46,7 @@ public class GameState implements Cloneable {
     }
 
     public boolean hasWinner() {
-        return mWinner.isUnknown();
+        return !mWinner.isUnknown();
     }
 
     public List<Player> getPlayers() {

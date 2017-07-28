@@ -12,5 +12,5 @@ public interface TicTacToeView {
 
     void drawPlayerTurn(PlayerType player, String playerName);
     void drawGrid(List<PlayerType> grid);
-    void displayGameOverDialog();
+    void displayGameOverDialog(String playerName);
 }

@@ -62,4 +62,7 @@ dependencies {
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
     testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
     compile 'com.jakewharton.timber:timber:4.5.1'
+
+    // UI
+    compile 'cn.pedant.sweetalert:library:1.3'
 }

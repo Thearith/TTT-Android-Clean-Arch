@@ -17,6 +17,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import thearith.com.tictactoe.R;
 import thearith.com.tictactoe.cross.model.Player;
 import thearith.com.tictactoe.presentation.adapter.TicTacToeAdapter;
@@ -32,6 +33,7 @@ public class TicTacToeFragment extends BaseFragment implements TicTacToeView, Ti
     // Views
     @BindView(R.id.grid_tic_tac_toe)    RecyclerView mTicTacToeGrid;
     @BindView(R.id.tv_player_turn)      TextView mPlayerTurnTextView;
+    private SweetAlertDialog mResetDialog;
 
     @Inject
     TicTacToePresenter mPresenter;
@@ -73,7 +75,6 @@ public class TicTacToeFragment extends BaseFragment implements TicTacToeView, Ti
 
     private void initPresenter() {
         mPresenter.setView(this);
-        mPresenter.initGame(mPlayers, mSize);
 
     }
 
@@ -87,11 +88,14 @@ public class TicTacToeFragment extends BaseFragment implements TicTacToeView, Ti
 
         initPresenter();
 
+        initGame();
+
         return view;
     }
 
     private void prepareUI() {
         prepareRecyclerView(mSize);
+        prepareDialog();
     }
 
     private void prepareRecyclerView(int size) {
@@ -104,14 +108,28 @@ public class TicTacToeFragment extends BaseFragment implements TicTacToeView, Ti
         mTicTacToeGrid.setAdapter(mTicTacToeAdapter);
     }
 
+    private void prepareDialog() {
+        mResetDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.SUCCESS_TYPE)
+                .setTitleText("Congratulations")
+                .setConfirmText("Ok")
+                .setConfirmClickListener(dialog -> {
+                    initGame();
+                    dialog.dismiss();
+                });
+    }
+
 
     /**
      * TicTacToe's RecyclerView's Click Listener
      * */
 
+    private void initGame() {
+        mPresenter.initGame(mPlayers, mSize);
+    }
+
     @Override
     public void onGridClick(int row, int col) {
-        mPresenter.drawGrid(row, col);
+        mPresenter.checkGrid(row, col);
     }
 
 
@@ -130,11 +148,9 @@ public class TicTacToeFragment extends BaseFragment implements TicTacToeView, Ti
     }
 
     @Override
-    public void displayGameOverDialog() {
-        new AlertDialog.Builder(getActivity())
-                .setTitle("Congratz")
-                .setCancelable(false)
-                .create()
+    public void displayGameOverDialog(String playerName) {
+        mResetDialog
+                .setContentText("Player " + playerName + " has won!!")
                 .show();
     }
 }
