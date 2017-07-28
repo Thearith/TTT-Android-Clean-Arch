@@ -8,11 +8,15 @@ public class Player {
 
     private final PlayerType mPlayerType;
     private final String mName;
-    private final boolean mIsTurn;
+    private boolean mIsTurn;
 
     public Player(PlayerType playerType, String name, boolean isTurn) {
         mPlayerType = playerType;
         mName = name;
+        mIsTurn = isTurn;
+    }
+
+    public void setTurn(boolean isTurn) {
         mIsTurn = isTurn;
     }
 

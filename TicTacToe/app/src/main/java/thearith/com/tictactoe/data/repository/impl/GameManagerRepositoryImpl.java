@@ -2,11 +2,14 @@ package thearith.com.tictactoe.data.repository.impl;
 
 import android.support.annotation.NonNull;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
 import thearith.com.tictactoe.cross.model.GamePosition;
 import thearith.com.tictactoe.cross.model.GameState;
+import thearith.com.tictactoe.cross.model.Player;
 import thearith.com.tictactoe.data.local.LocalGameManager;
 import thearith.com.tictactoe.data.repository.GameManagerRepository;
 
@@ -22,6 +25,11 @@ public class GameManagerRepositoryImpl implements GameManagerRepository {
     @Inject
     public GameManagerRepositoryImpl(LocalGameManager localGameManager) {
         mLocal = localGameManager;
+    }
+
+    @Override
+    public Observable<GameState> initializeGame(List<Player> players, int size) {
+        return mLocal.initializeGame(players, size);
     }
 
     @Override

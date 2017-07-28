@@ -1,13 +1,14 @@
 package thearith.com.tictactoe.presentation.adapter;
 
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -22,13 +23,15 @@ import thearith.com.tictactoe.presentation.utils.constants.TicTacToeUtils;
 
 public class TicTacToeAdapter extends RecyclerView.Adapter<TicTacToeAdapter.TicTacToeViewHolder> {
 
-    // An interface for Clicking TicTacToe grid
+    /**
+     * An interface for Clicking TicTacToe grid
+     */
     public interface TicTacToeListener {
         void onGridClick(int row, int col);
     }
 
     private final int mColSize;
-    private PlayerType[] mScores;
+    private List<PlayerType> mScores;
     private TicTacToeListener mGridListener;
 
     public TicTacToeAdapter(int size) {
@@ -36,7 +39,7 @@ public class TicTacToeAdapter extends RecyclerView.Adapter<TicTacToeAdapter.TicT
         mScores = ArrayUtils.initArray(PlayerType.UNKNOWN, size);
     }
 
-    public TicTacToeAdapter(PlayerType[] grid, int size) {
+    public TicTacToeAdapter(List<PlayerType> grid, int size) {
         mScores = grid;
         mColSize = size;
     }
@@ -46,21 +49,15 @@ public class TicTacToeAdapter extends RecyclerView.Adapter<TicTacToeAdapter.TicT
         return this;
     }
 
-    public void setGrid(PlayerType[] scores) {
+    public void setGrid(List<PlayerType> scores) {
         if(scores != null) {
-            for(int pos=0; pos<scores.length; pos++) {
-                if(!mScores[pos].equals(scores[pos])) {
-                    mScores[pos] = scores[pos];
+            for(int pos=0; pos<scores.size(); pos++) {
+                if(!mScores.get(pos).equals(scores.get(pos))) {
+                    mScores.set(pos, scores.get(pos));
                     notifyItemChanged(pos);
                 }
             }
         }
-    }
-
-    public void setTicTacToeCol(int row, int col, PlayerType val) {
-        int position = row*mColSize + col;
-        mScores[position] = val;
-        notifyItemChanged(position);
     }
 
 
@@ -75,11 +72,11 @@ public class TicTacToeAdapter extends RecyclerView.Adapter<TicTacToeAdapter.TicT
 
     @Override
     public void onBindViewHolder(TicTacToeViewHolder holder, final int position) {
-        if(position >= mScores.length) {
+        if(position >= mScores.size()) {
             return;
         }
 
-        PlayerType value = mScores[position];
+        PlayerType value = mScores.get(position);
 
         Context context = holder.itemView.getContext();
         int bgColor = TicTacToeUtils.getTicTacToeBgColor(value);
@@ -98,8 +95,9 @@ public class TicTacToeAdapter extends RecyclerView.Adapter<TicTacToeAdapter.TicT
 
             holder.itemView.setClickable(true);
             holder.itemView.setOnClickListener(view -> {
-                int row = position / mColSize;
-                int col = position % mColSize;
+                int size = (int) Math.sqrt(mColSize);
+                int row = position / size;
+                int col = position % size;
 
                 if(mGridListener != null) {
                     mGridListener.onGridClick(row, col);
@@ -112,7 +110,7 @@ public class TicTacToeAdapter extends RecyclerView.Adapter<TicTacToeAdapter.TicT
 
     @Override
     public int getItemCount() {
-        return mScores != null ? mScores.length : 0;
+        return mScores != null ? mScores.size() : 0;
     }
 
     class TicTacToeViewHolder extends RecyclerView.ViewHolder {

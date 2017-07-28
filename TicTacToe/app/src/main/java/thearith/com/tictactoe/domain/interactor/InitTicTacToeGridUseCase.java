@@ -1,30 +1,31 @@
 package thearith.com.tictactoe.domain.interactor;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
-import thearith.com.tictactoe.cross.model.GamePosition;
 import thearith.com.tictactoe.cross.model.GameState;
+import thearith.com.tictactoe.cross.model.Player;
 import thearith.com.tictactoe.data.repository.GameManagerRepository;
 import thearith.com.tictactoe.data.repository.GamePublisherRepository;
 import thearith.com.tictactoe.domain.executor.base.PostExecutionThread;
 import thearith.com.tictactoe.domain.executor.base.ThreadExecutor;
 import thearith.com.tictactoe.domain.interactor.base.UseCase;
-import thearith.com.tictactoe.presentation.internal.di.ActivityScope;
 import thearith.com.tictactoe.presentation.internal.di.ApplicationScope;
 
 /**
- * Created by Thearith on 7/26/17.
+ * Created by Thearith on 7/28/17.
  */
 
 @ApplicationScope
-public class DrawTicTacToeGridUseCase extends UseCase<GameState> {
+public class InitTicTacToeGridUseCase extends UseCase<GameState> {
 
     private final GameManagerRepository mGameManager;
     private final GamePublisherRepository mGamePublisher;
 
     @Inject
-    DrawTicTacToeGridUseCase(GameManagerRepository gameManager, GamePublisherRepository gamePublisher,
+    InitTicTacToeGridUseCase(GameManagerRepository gameManager, GamePublisherRepository gamePublisher,
                                     ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread) {
         super(threadExecutor, postExecutionThread);
         mGameManager = gameManager;
@@ -34,10 +35,10 @@ public class DrawTicTacToeGridUseCase extends UseCase<GameState> {
     @Override
     protected Observable<GameState> createObservable(Object... params) {
         if(params != null && params.length >= 2) {
-            GameState gameState = (GameState) params[0];
-            GamePosition gamePosition = (GamePosition) params[1];
+            List<Player> players = (List<Player>) params[0];
+            int gameSize = (int) params[1];
 
-            return mGameManager.check(gameState, gamePosition)
+            return mGameManager.initializeGame(players, gameSize)
                     .flatMap(mGamePublisher::publishUI);
         }
 

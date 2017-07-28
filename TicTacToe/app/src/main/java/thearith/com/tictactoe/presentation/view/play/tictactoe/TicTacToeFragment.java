@@ -10,11 +10,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import thearith.com.tictactoe.R;
+import thearith.com.tictactoe.cross.model.Player;
 import thearith.com.tictactoe.presentation.adapter.TicTacToeAdapter;
 import thearith.com.tictactoe.cross.model.PlayerType;
 import thearith.com.tictactoe.presentation.view.base.BaseFragment;
@@ -34,6 +38,7 @@ public class TicTacToeFragment extends BaseFragment implements TicTacToeView, Ti
 
     // Data
     private int mSize = 3;
+    private List<Player> mPlayers;
     private TicTacToeAdapter mTicTacToeAdapter;
 
     /**
@@ -56,6 +61,10 @@ public class TicTacToeFragment extends BaseFragment implements TicTacToeView, Ti
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initializeInjector();
+
+        mPlayers = new ArrayList<>();
+        mPlayers.add(new Player(PlayerType.PLAYER_X, "Player X", true));
+        mPlayers.add(new Player(PlayerType.PLAYER_O, "Player O", false));
     }
 
     private void initializeInjector() {
@@ -64,7 +73,8 @@ public class TicTacToeFragment extends BaseFragment implements TicTacToeView, Ti
 
     private void initPresenter() {
         mPresenter.setView(this);
-        mPresenter.initState(mSize);
+        mPresenter.initGame(mPlayers, mSize);
+
     }
 
     @Nullable
@@ -90,8 +100,7 @@ public class TicTacToeFragment extends BaseFragment implements TicTacToeView, Ti
         mTicTacToeGrid.setLayoutManager(lLayout);
 
         // Adapter
-        mTicTacToeAdapter = new TicTacToeAdapter(size)
-                .setClickListener(this);
+        mTicTacToeAdapter = new TicTacToeAdapter(size*size).setClickListener(this);
         mTicTacToeGrid.setAdapter(mTicTacToeAdapter);
     }
 
@@ -116,7 +125,7 @@ public class TicTacToeFragment extends BaseFragment implements TicTacToeView, Ti
     }
 
     @Override
-    public void drawGrid(PlayerType[] grid) {
+    public void drawGrid(List<PlayerType> grid) {
         mTicTacToeAdapter.setGrid(grid);
     }
 

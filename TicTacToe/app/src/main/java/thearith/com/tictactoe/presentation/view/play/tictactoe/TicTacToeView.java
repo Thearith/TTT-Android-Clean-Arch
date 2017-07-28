@@ -1,5 +1,7 @@
 package thearith.com.tictactoe.presentation.view.play.tictactoe;
 
+import java.util.List;
+
 import thearith.com.tictactoe.cross.model.PlayerType;
 
 /**
@@ -9,6 +11,6 @@ import thearith.com.tictactoe.cross.model.PlayerType;
 public interface TicTacToeView {
 
     void drawPlayerTurn(PlayerType player, String playerName);
-    void drawGrid(PlayerType[] grid);
+    void drawGrid(List<PlayerType> grid);
     void displayGameOverDialog();
 }

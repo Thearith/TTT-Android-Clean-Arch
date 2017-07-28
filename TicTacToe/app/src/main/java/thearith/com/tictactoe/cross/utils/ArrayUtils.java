@@ -14,7 +14,9 @@ public class ArrayUtils {
         if(list != null) {
             List<T> flatList = new ArrayList<>(list.size() * list.size());
             for(List<T> small : list) {
-                Collections.copy(flatList, small);
+                for(T elem : small) {
+                    flatList.add(elem);
+                }
             }
 
             return flatList;
@@ -35,7 +37,9 @@ public class ArrayUtils {
 
     public static <T> List<T> copyArray(List<T> list) {
         List<T> copy = new ArrayList<>();
-        Collections.copy(copy, list);
+        for(T elem : list) {
+            copy.add(elem);
+        }
         return copy;
     }
 
@@ -54,7 +58,9 @@ public class ArrayUtils {
             List<List<T>> copy = new ArrayList<>();
             for(List<T> innerList : list) {
                 List<T> copyInnerList = new ArrayList<>();
-                Collections.copy(copyInnerList, innerList);
+                for(T elem : innerList) {
+                    copyInnerList.add(elem);
+                }
                 copy.add(copyInnerList);
             }
 

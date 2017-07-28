@@ -52,4 +52,14 @@ public class GameState implements Cloneable {
     public List<Player> getPlayers() {
         return mPlayers;
     }
+
+    public Player getPlayerTurn() {
+        for(Player player : mPlayers) {
+            if(player.isTurn()) {
+                return player;
+            }
+        }
+
+        return null;
+    }
 }

@@ -63,7 +63,8 @@ public class LocalGameManager implements GameManager {
 
         return Observable.just(gameState)
                 .map(state -> this.markGrid(state, value, row, col))
-                .map(this::checkWinner);
+                .map(this::checkWinner)
+                .map(this::changePlayerTurn);
     }
 
 
@@ -201,6 +202,29 @@ public class LocalGameManager implements GameManager {
         }
 
         return isSameType ? scores.get(0).get(size-1) : PlayerType.UNKNOWN;
+    }
+
+
+    /**
+     *  Alternate turns between users
+     * */
+    private GameState changePlayerTurn(GameState gameState) {
+        List<Player> players = ArrayUtils.copyArray(gameState.getPlayers());
+        int newTurn = 0;
+        for(int i=0; i<players.size(); i++) {
+            Player player = players.get(i);
+            if(player.isTurn()) {
+                newTurn = (i + 1) % players.size();
+                break;
+            }
+        }
+
+        for(int i=0; i<players.size(); i++) {
+            boolean isTurn = i == newTurn;
+            players.get(i).setTurn(isTurn);
+        }
+
+        return new GameState(gameState.getScores(), players, gameState.getWinner());
     }
 
 }
