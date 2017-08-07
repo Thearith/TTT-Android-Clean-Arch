@@ -148,9 +148,16 @@ public class TicTacToeFragment extends BaseFragment implements TicTacToeView, Ti
     }
 
     @Override
-    public void displayGameOverDialog(String playerName) {
+    public void displayWinDialog(String playerName) {
         mResetDialog
                 .setContentText("Player " + playerName + " has won!!")
+                .show();
+    }
+
+    @Override
+    public void displayDrawDialog() {
+        mResetDialog
+                .setContentText("This is a draw game")
                 .show();
     }
 }

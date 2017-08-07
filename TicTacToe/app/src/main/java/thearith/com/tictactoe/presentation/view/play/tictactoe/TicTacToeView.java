@@ -9,8 +9,8 @@ import thearith.com.tictactoe.cross.model.PlayerType;
  */
 
 public interface TicTacToeView {
-
     void drawPlayerTurn(PlayerType player, String playerName);
     void drawGrid(List<PlayerType> grid);
-    void displayGameOverDialog(String playerName);
+    void displayWinDialog(String playerName);
+    void displayDrawDialog();
 }

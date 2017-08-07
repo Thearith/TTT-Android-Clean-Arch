@@ -6,7 +6,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import thearith.com.tictactoe.cross.eventbus.EventBus;
@@ -14,10 +13,10 @@ import thearith.com.tictactoe.cross.model.GamePosition;
 import thearith.com.tictactoe.cross.model.GameState;
 import thearith.com.tictactoe.cross.model.Player;
 import thearith.com.tictactoe.cross.model.PlayerType;
+import thearith.com.tictactoe.cross.model.WinningState;
 import thearith.com.tictactoe.cross.utils.ArrayUtils;
 import thearith.com.tictactoe.domain.interactor.DrawTicTacToeGridUseCase;
 import thearith.com.tictactoe.domain.interactor.InitTicTacToeGridUseCase;
-import thearith.com.tictactoe.presentation.internal.di.ActivityScope;
 import thearith.com.tictactoe.presentation.internal.di.ApplicationScope;
 import thearith.com.tictactoe.presentation.presenter.Observer;
 import thearith.com.tictactoe.presentation.presenter.Presenter;
@@ -119,8 +118,11 @@ public class TicTacToePresenter implements Presenter {
                 Player playerTurn = value.getPlayerTurn();
                 mView.drawPlayerTurn(playerTurn.getPlayerType(), playerTurn.getName());
 
-                if(mCurrentState.hasWinner()) {
-                    mView.displayGameOverDialog(mCurrentState.getWinner().toString());
+                WinningState winningState = mCurrentState.getWinningState();
+                if(winningState.isWinning()) {
+                    mView.displayWinDialog(winningState.toString()); //TODO: convert to player's name
+                } else if(winningState.isDraw()) {
+                    mView.displayDrawDialog();
                 }
             }
         }

@@ -9,7 +9,9 @@ import javax.inject.Inject;
 import io.reactivex.Observable;
 import thearith.com.tictactoe.cross.model.GamePosition;
 import thearith.com.tictactoe.cross.model.Player;
+import thearith.com.tictactoe.cross.model.WinningState;
 import thearith.com.tictactoe.cross.utils.ArrayUtils;
+import thearith.com.tictactoe.cross.utils.GameStateUtils;
 import thearith.com.tictactoe.data.repository.datasource.GameManager;
 import thearith.com.tictactoe.cross.model.GameState;
 import thearith.com.tictactoe.cross.model.PlayerType;
@@ -34,7 +36,7 @@ public class LocalGameManager implements GameManager {
     @Override
     public Observable<GameState> initializeGame(List<Player> players, int size) {
         List<List<PlayerType>> initialScores = initializeScores(size);
-        PlayerType initialWinnerState = initializeWinnerState();
+        WinningState initialWinnerState = initializeWinnerState();
         GameState initialGameState = new GameState(initialScores, players, initialWinnerState);
         return Observable.just(initialGameState);
     }
@@ -43,8 +45,8 @@ public class LocalGameManager implements GameManager {
         return ArrayUtils.init2DArray(PlayerType.UNKNOWN, size);
     }
 
-    private PlayerType initializeWinnerState() {
-        return PlayerType.UNKNOWN;
+    private WinningState initializeWinnerState() {
+        return WinningState.NOT_OVER;
     }
 
 
@@ -79,7 +81,7 @@ public class LocalGameManager implements GameManager {
 
         scores.get(row).set(col, value);
 
-        return new GameState(scores, state.getPlayers(), state.getWinner());
+        return new GameState(scores, state.getPlayers(), state.getWinningState());
     }
 
 
@@ -88,33 +90,38 @@ public class LocalGameManager implements GameManager {
      * */
     private GameState checkWinner(final GameState state) {
         List<List<PlayerType>> scores = state.getScores();
-        PlayerType winner = checkGrid(scores);
+        WinningState winner = checkGrid(scores);
 
         return new GameState(scores, state.getPlayers(), winner);
     }
 
-    private PlayerType checkGrid(List<List<PlayerType>> scores) {
+    private WinningState checkGrid(List<List<PlayerType>> scores) {
         if(scores != null) {
-            PlayerType winnerRow = checkRows(scores);
-            if(!winnerRow.isUnknown()) {
+            WinningState winnerRow = checkRows(scores);
+            if(winnerRow.isWinning()) {
                 return winnerRow;
             }
 
-            PlayerType winnerColumn = checkColumns(scores);
-            if(!winnerColumn.isUnknown()) {
+            WinningState winnerColumn = checkColumns(scores);
+            if(winnerRow.isWinning()) {
                 return winnerColumn;
             }
 
-            PlayerType winnerDiagonal = checkDiagonals(scores);
-            if(!winnerDiagonal.isUnknown()) {
+            WinningState winnerDiagonal = checkDiagonals(scores);
+            if(winnerRow.isWinning()) {
                 return winnerDiagonal;
+            }
+
+            WinningState drawState = checkDrawState(scores);
+            if(drawState.isDraw()) {
+                return drawState;
             }
         }
 
-        return PlayerType.UNKNOWN;
+        return WinningState.NOT_OVER;
     }
 
-    private PlayerType checkRows(@NonNull List<List<PlayerType>> scores) {
+    private WinningState checkRows(@NonNull List<List<PlayerType>> scores) {
         int size = scores.size();
 
         for(int i=0; i<size; i++) {
@@ -129,14 +136,14 @@ public class LocalGameManager implements GameManager {
             }
 
             if(isSameType) {
-                return scores.get(i).get(0);
+                return GameStateUtils.getWinner(scores.get(i).get(0));
             }
         }
 
-        return PlayerType.UNKNOWN;
+        return WinningState.NOT_OVER;
     }
 
-    private PlayerType checkColumns(@NonNull List<List<PlayerType>> scores) {
+    private WinningState checkColumns(@NonNull List<List<PlayerType>> scores) {
         int size = scores.size();
 
         for(int i=0; i<size; i++) {
@@ -151,28 +158,28 @@ public class LocalGameManager implements GameManager {
             }
 
             if(isSameType) {
-                return scores.get(0).get(i);
+                return GameStateUtils.getWinner(scores.get(0).get(i));
             }
         }
 
-        return PlayerType.UNKNOWN;
+        return WinningState.NOT_OVER;
     }
 
-    private PlayerType checkDiagonals(@NonNull List<List<PlayerType>> scores) {
-        PlayerType winnerLeft = checkLeftDiagonal(scores);
-        if(!winnerLeft.isUnknown()) {
+    private WinningState checkDiagonals(@NonNull List<List<PlayerType>> scores) {
+        WinningState winnerLeft = checkLeftDiagonal(scores);
+        if(winnerLeft.isWinning()) {
             return winnerLeft;
         }
 
-        PlayerType winnerRight = checkRightDiagonal(scores);
-        if(!winnerRight.isUnknown()){
+        WinningState winnerRight = checkRightDiagonal(scores);
+        if(winnerLeft.isWinning()) {
             return winnerRight;
         }
 
-        return PlayerType.UNKNOWN;
+        return WinningState.NOT_OVER;
     }
 
-    private PlayerType checkLeftDiagonal(@NonNull List<List<PlayerType>> scores) {
+    private WinningState checkLeftDiagonal(@NonNull List<List<PlayerType>> scores) {
         int size = scores.size();
         boolean isSameType = true;
 
@@ -185,10 +192,11 @@ public class LocalGameManager implements GameManager {
             }
         }
 
-        return isSameType ? scores.get(0).get(0) : PlayerType.UNKNOWN;
+        WinningState winner = GameStateUtils.getWinner(scores.get(0).get(0));
+        return isSameType ? winner : WinningState.NOT_OVER;
     }
 
-    private PlayerType checkRightDiagonal(List<List<PlayerType>> scores) {
+    private WinningState checkRightDiagonal(List<List<PlayerType>> scores) {
         int size = scores.size();
         boolean isSameType = true;
 
@@ -201,7 +209,20 @@ public class LocalGameManager implements GameManager {
             }
         }
 
-        return isSameType ? scores.get(0).get(size-1) : PlayerType.UNKNOWN;
+        WinningState winner = GameStateUtils.getWinner(scores.get(0).get(size-1));
+        return isSameType ? winner : WinningState.NOT_OVER;
+    }
+
+    private WinningState checkDrawState(List<List<PlayerType>> scores) {
+        for(List<PlayerType> rows : scores) {
+            for(PlayerType col : rows) {
+                if(col.isUnknown()) {
+                    return WinningState.NOT_OVER;
+                }
+            }
+        }
+
+        return WinningState.DRAW;
     }
 
 
@@ -224,7 +245,7 @@ public class LocalGameManager implements GameManager {
             players.get(i).setTurn(isTurn);
         }
 
-        return new GameState(gameState.getScores(), players, gameState.getWinner());
+        return new GameState(gameState.getScores(), players, gameState.getWinningState());
     }
 
 }

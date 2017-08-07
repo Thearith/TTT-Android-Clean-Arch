@@ -4,28 +4,20 @@ import thearith.com.tictactoe.presentation.utils.constants.Constants;
 import thearith.com.tictactoe.presentation.utils.constants.TicTacToeConstants;
 
 /**
- * Created by Thearith on 7/25/17.
+ * Created by Thearith on 7/29/17.
  */
 
-public enum PlayerType {
+public enum WinningState {
+    NOT_OVER(0),
     PLAYER_X(1),
     PLAYER_O(2),
-    UNKNOWN(0);
+    DRAW(4);
 
     private int mType;
 
-    PlayerType() {
-        mType = 0;
-    }
-
-    PlayerType(int type) {
+    WinningState(int type) {
         mType = type;
     }
-
-    public int getValue() {
-        return mType;
-    }
-
 
     @Override
     public String toString() {
@@ -36,17 +28,25 @@ public enum PlayerType {
             case PLAYER_O:
                 return TicTacToeConstants.PLAYER_O;
 
-            case UNKNOWN:
+            case NOT_OVER:
             default:
                 return Constants.EMPTY_STRING;
         }
     }
 
-    public boolean equal(PlayerType playerType) {
-        return mType == playerType.mType;
+    public int getValue() {
+        return mType;
     }
 
-    public boolean isUnknown() {
-        return mType != PLAYER_X.getValue() && mType != PLAYER_O.getValue();
+    public boolean isWinning() {
+        return mType == PLAYER_X.getValue() || mType == PLAYER_O.getValue();
+    }
+
+    public boolean isDraw() {
+        return mType == DRAW.getValue();
+    }
+
+    public boolean isGameNotOver() {
+        return mType == NOT_OVER.getValue();
     }
 }

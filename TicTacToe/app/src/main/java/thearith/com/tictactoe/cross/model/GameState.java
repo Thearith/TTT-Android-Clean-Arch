@@ -12,24 +12,24 @@ public class GameState implements Cloneable {
 
     private final List<List<PlayerType>> mScores;
     private final List<Player> mPlayers;
-    private final PlayerType mWinner;
+    private final WinningState mWinningState;
 
 
     /**
      * Constructor
      * */
 
-    public GameState(List<List<PlayerType>> scores, List<Player> players, PlayerType winner) {
+    public GameState(List<List<PlayerType>> scores, List<Player> players, WinningState winner) {
         mScores = scores;
         mPlayers = players;
-        mWinner = winner;
+        mWinningState = winner;
     }
 
     @Override
     public GameState clone() {
         List<List<PlayerType>> scores = ArrayUtils.copy2DArray(mScores);
         List<Player> players = ArrayUtils.copyArray(mPlayers);
-        return new GameState(scores, players, mWinner);
+        return new GameState(scores, players, mWinningState);
     }
 
 
@@ -39,14 +39,6 @@ public class GameState implements Cloneable {
 
     public List<List<PlayerType>> getScores() {
         return mScores;
-    }
-
-    public PlayerType getWinner() {
-        return mWinner;
-    }
-
-    public boolean hasWinner() {
-        return !mWinner.isUnknown();
     }
 
     public List<Player> getPlayers() {
@@ -61,5 +53,9 @@ public class GameState implements Cloneable {
         }
 
         return null;
+    }
+
+    public WinningState getWinningState() {
+        return mWinningState;
     }
 }
